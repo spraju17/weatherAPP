@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.Locale;
 import java.util.Optional;
 
-@Service
-public class GetWeatherMetricsDBImpl implements GetWeatherMetricsService {
+@Service("WeatherMetricsDBService")
+public class GetWeatherMetricsDBServiceImpl implements GetWeatherMetricsService {
 
     @Autowired
     LocationRepository locationRepository;
@@ -29,11 +29,9 @@ public class GetWeatherMetricsDBImpl implements GetWeatherMetricsService {
     }
 
     @Override
-    public CurrentWeatherInfoMetrics getCurrentWeatherInfo(String location, Long unixTimeStamp) throws WeatherMetricsNotFoundDB, WeatherDBOutDatedException {
+    public CurrentWeatherInfoMetrics getCurrentWeatherInfo(String location, Long unixTimeStamp) throws WeatherMetricsNotFoundDB {
         Optional<LocationEntity> metrics = locationRepository.findById(location.toUpperCase(Locale.ROOT));
         CurrentWeatherInfoMetrics weatherMetrics = metrics.map(x-> currentWeatherInfoMetricsEntityMapper.transform(x, null)).orElseThrow(()-> new WeatherMetricsNotFoundDB(" not found in db"));
-        if ((unixTimeStamp - weatherMetrics.getCurrentEpochTimeStamp()) > 60)
-            throw new WeatherDBOutDatedException("outated");
 
         return weatherMetrics;
     }

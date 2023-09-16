@@ -11,4 +11,13 @@ public interface GetWeatherMetricsService {
 
     public CurrentWeatherInfoMetrics getCurrentWeatherInfo(String location, Long unixTimeStamp) throws WeatherMetricsNotFoundDB, WeatherDBOutDatedException;
 
+    default public Long getCurrentTimeInUnqix(){
+        long currentTimeMillis = System.currentTimeMillis();
+
+        // Convert milliseconds to seconds by dividing by 1000
+        long currentTimestampSeconds = currentTimeMillis / 1000;
+
+        return currentTimestampSeconds;
+    }
+
 }

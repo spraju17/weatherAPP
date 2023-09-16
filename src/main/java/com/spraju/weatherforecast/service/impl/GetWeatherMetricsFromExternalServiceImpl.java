@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
-@Service
+@Service("WeatherMetricsFromExternalService")
 public class GetWeatherMetricsFromExternalServiceImpl implements GetWeatherMetricsService {
 
     @Autowired

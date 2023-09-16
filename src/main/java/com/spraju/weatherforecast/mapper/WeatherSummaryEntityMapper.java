@@ -2,7 +2,9 @@ package com.spraju.weatherforecast.mapper;
 
 import com.spraju.weatherforecast.entity.WeatherEntity;
 import com.spraju.weatherforecast.models.Weather;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WeatherSummaryEntityMapper implements Mapper<Weather, WeatherEntity> {
 
     @Override

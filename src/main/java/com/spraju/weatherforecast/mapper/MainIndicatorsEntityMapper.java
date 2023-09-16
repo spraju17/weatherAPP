@@ -2,7 +2,9 @@ package com.spraju.weatherforecast.mapper;
 
 import com.spraju.weatherforecast.entity.MainEntity;
 import com.spraju.weatherforecast.models.Main;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MainIndicatorsEntityMapper implements Mapper<Main, MainEntity> {
 
     @Override

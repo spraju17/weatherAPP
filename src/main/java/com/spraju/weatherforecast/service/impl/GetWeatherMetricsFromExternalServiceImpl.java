@@ -17,7 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("WeatherMetricsFromExternalService")
 public class GetWeatherMetricsFromExternalServiceImpl implements GetWeatherMetricsService {
@@ -66,15 +71,13 @@ public class GetWeatherMetricsFromExternalServiceImpl implements GetWeatherMetri
                     ForeCastWeatherInfoMetrics.class);
             ForeCastWeatherInfoMetrics response = foreCastWeatherInfoMetricsResponseEntity.getBody();
             response.setLocationName(location);
-            LocationEntity locationEntity = foreCastWeatherInfoMetricsMapper.transform(response, null);
-            Optional<LocationEntity> entityOptional = locationRepository.findById(location);
-            entityOptional.map(x->
-            {
-                x.setWeathers(locationEntity.getWeathers());
-                x.setMains(locationEntity.getMains());
-                x.setWinds(locationEntity.getWinds());
+            List<CurrentWeatherInfoMetrics> modifiedResponse = response.getForeCastWeatherInfoMetrics().stream().map(x -> {
+                x.setDate(convertToLocalDateTime(x.getCurrentEpochTimeStamp()));
                 return x;
-            }).orElseThrow(()-> new RuntimeException("s"));
+            }).collect(Collectors.toList());
+            response.setForeCastWeatherInfoMetrics(modifiedResponse);
+
+            LocationEntity locationEntity = foreCastWeatherInfoMetricsMapper.transform(response, null);
             return response;
         }catch (Exception e){
             logHandler.logEvent("Error in fetching forecast weather details from external API exception: "+ e.getStackTrace().toString(), logger);
@@ -108,6 +111,16 @@ public class GetWeatherMetricsFromExternalServiceImpl implements GetWeatherMetri
         }
 
 
+    }
+
+    private LocalDateTime convertToLocalDateTime(Long unixTimestamp){
+        // Convert Unix timestamp to milliseconds by multiplying by 1000
+        Instant instant = Instant.ofEpochMilli(unixTimestamp * 1000);
+
+        // Convert Instant to LocalDateTime using the default time zone (you can specify a different ZoneId if needed)
+        LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        return localDateTime;
     }
 
 }

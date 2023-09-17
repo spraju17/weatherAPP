@@ -29,7 +29,8 @@ public class ForeCastWeatherInfoMetricsMapper implements Mapper<LocationEntity, 
     public LocationEntity transform(ForeCastWeatherInfoMetrics data, Long unixTimeStamp) {
         LocationEntity locationEntity = new LocationEntity();
         locationEntity.setName(data.getLocationName().toUpperCase(Locale.ROOT));
-        List<WeatherEntity> forecastWeather = data.getForeCastWeatherInfoMetrics().stream().map(x -> x.getWeatherSummary().get(0)).map(x-> weatherSummaryMapper.transform(x,x.getUnixTimeStamp())).collect(Collectors.toList());
+        Long timestamp = data.getForeCastWeatherInfoMetrics().get(0).getCurrentEpochTimeStamp();
+        List<WeatherEntity> forecastWeather = data.getForeCastWeatherInfoMetrics().stream().map(x -> x.getWeatherSummary().get(0)).map(x-> weatherSummaryMapper.transform(x,timestamp)).collect(Collectors.toList());
         locationEntity.setWeathers(forecastWeather);
         List<MainEntity> forecastMains = data.getForeCastWeatherInfoMetrics().stream().map(x -> mainIndicatorsMapper.transform(x.getMainIndicators(), x.getCurrentEpochTimeStamp())).collect(Collectors.toList());
         locationEntity.setMains(forecastMains);

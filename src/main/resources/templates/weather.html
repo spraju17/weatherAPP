@@ -3,40 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <title>Weather Forecast</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        p {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-<form method="get" action="/">
-    <label for="locationName">Enter Location:</label>
-    <input type="text" id="locationName" name="locationName">
-    <button type="submit">Get Weather</button>
-</form>
-
-<!-- Display weather information if available -->
-<div th:if="${foreCastWeatherInfoMetrics != null && currentWeatherInfoMetrics != null}">
-    <h1>Weather Forecast for <span th:text="${foreCastWeatherInfoMetrics.locationName}"></span></h1>
-
-    <!-- Display forecast weather data -->
-    <h2>Forecast Weather</h2>
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Temperature (°C)</th>
-            <th>Humidity (%)</th>
-            <th>Weather Description</th>
-        </tr>
-        <tr th:each="forecast : ${foreCastWeatherInfoMetrics.foreCastWeatherInfoMetrics}">
-            <td th:text="${forecast.currentEpochTimeStamp}"></td>
-            <td th:text="${forecast.mainIndicators.temp}"></td>
-            <td th:text="${forecast.mainIndicators.humidity}"></td>
-            <td th:text="${forecast.weatherSummary[0].description}"></td>
-        </tr>
-    </table>
+<div class="container">
+    <h1>Weather Forecast</h1>
+    <form method="get" action="/">
+        <label for="locationName">Enter Location:</label>
+        <input type="text" id="locationName" name="locationName">
+        <button type="submit">Get Weather</button>
+    </form>
 
     <!-- Display current weather data -->
     <h2>Current Weather</h2>
     <p>Temperature: <span th:text="${currentWeatherInfoMetrics.mainIndicators.temp}"></span> °C</p>
     <p>Humidity: <span th:text="${currentWeatherInfoMetrics.mainIndicators.humidity}"></span> %</p>
     <p>Weather Description: <span th:text="${currentWeatherInfoMetrics.weatherSummary[0].description}"></span></p>
+
+    <!-- Display weather information if available -->
+    <div th:if="${foreCastWeatherInfoMetrics != null && currentWeatherInfoMetrics != null}">
+        <!-- Display forecast weather data -->
+        <h2>Forecast Weather</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Weather Description</th>
+            </tr>
+            <tr th:each="forecast : ${foreCastWeatherInfoMetrics.foreCastWeatherInfoMetrics}">
+                <td th:text="${forecast.date}"></td>
+                <td th:text="${forecast.mainIndicators.temp}"></td>
+                <td th:text="${forecast.mainIndicators.humidity}"></td>
+                <td th:text="${forecast.weatherSummary[0].description}"></td>
+            </tr>
+        </table>
+
+
+    </div>
 </div>
 </body>
 </html>

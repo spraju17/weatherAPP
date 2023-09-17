@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,7 +82,7 @@ public class GetWeatherMetricsDBServiceImpl implements GetWeatherMetricsService 
                 logHandler.logEvent("Forecast weather for " + location + " failed for both DB search and External API call ", logger);
                 throw e;
             }
-            if (foreCastWeatherInfoMetrics.getForeCastWeatherInfoMetrics().size()< 10){
+            if (validateAndFiletrForecastWeatherInfo(foreCastWeatherInfoMetrics)){
                 logHandler.logEvent("Forecast weather for " + location + " found in DB is outdated-- calling external API", logger);
                 ForeCastWeatherInfoMetrics metrics1 = weatherMetricsService.getForeCastWeatherInfo(location);
                 updateForeCastWeatherInfoDB(metrics, metrics1);
@@ -95,6 +96,13 @@ public class GetWeatherMetricsDBServiceImpl implements GetWeatherMetricsService 
             logHandler.logEvent("Exception occured while fetching the forecast weather : "+ Arrays.toString(e.getStackTrace()), logger);
             throw  e;
         }
+    }
+
+    private boolean validateAndFiletrForecastWeatherInfo(ForeCastWeatherInfoMetrics foreCastWeatherInfoMetrics) {
+        Long currentTimeInUnqix = getCurrentTimeInUnqix();
+        List<CurrentWeatherInfoMetrics> filteredForeCastData = foreCastWeatherInfoMetrics.getForeCastWeatherInfoMetrics().stream()
+                .filter(x -> (x.getMainIndicators().getUnixTimeStamp() - currentTimeInUnqix) > 72000).collect(Collectors.toList());
+        return (filteredForeCastData.size() > 30);
     }
 
     @Override
@@ -133,11 +141,8 @@ public class GetWeatherMetricsDBServiceImpl implements GetWeatherMetricsService 
     }
 
     private void updateForeCastWeatherInfoDB( Optional<LocationEntity> metrics, ForeCastWeatherInfoMetrics metrics1){
-        metrics.map(x->{
-            x.setWeathers(metrics1.getForeCastWeatherInfoMetrics().stream().map(y-> weatherSummaryMapper.transform(y.getWeatherSummary().get(0), null)).collect(Collectors.toList()));
-            x.setWinds(metrics1.getForeCastWeatherInfoMetrics().stream().map(z->windMapper.transform(z.getWind(), null)).collect(Collectors.toList()));
-            x.setMains(metrics1.getForeCastWeatherInfoMetrics().stream().map(t-> mainIndicatorsMapper.transform(t.getMainIndicators(), null)).collect(Collectors.toList()));
-            return x;
-        }).orElseThrow(()-> new RuntimeException("d"));
+        metrics.get().setWeathers(metrics1.getForeCastWeatherInfoMetrics().stream().map(y-> weatherSummaryMapper.transform(y.getWeatherSummary().get(0), y.getCurrentEpochTimeStamp())).collect(Collectors.toList()));
+        metrics.get().setWinds(metrics1.getForeCastWeatherInfoMetrics().stream().map(z->windMapper.transform(z.getWind(), z.getCurrentEpochTimeStamp())).collect(Collectors.toList()));
+        metrics.get().setMains(metrics1.getForeCastWeatherInfoMetrics().stream().map(t-> mainIndicatorsMapper.transform(t.getMainIndicators(), t.getCurrentEpochTimeStamp())).collect(Collectors.toList()));
     }
 }

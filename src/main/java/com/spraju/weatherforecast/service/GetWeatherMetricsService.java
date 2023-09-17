@@ -7,7 +7,7 @@ import com.spraju.weatherforecast.models.ForeCastWeatherInfoMetrics;
 
 public interface GetWeatherMetricsService {
 
-    public ForeCastWeatherInfoMetrics getForeCastWeatherInfo(String location);
+    public ForeCastWeatherInfoMetrics getForeCastWeatherInfo(String location) throws WeatherMetricsNotFoundDB;
 
     public CurrentWeatherInfoMetrics getCurrentWeatherInfo(String location, Long unixTimeStamp) throws WeatherMetricsNotFoundDB, WeatherDBOutDatedException;
 

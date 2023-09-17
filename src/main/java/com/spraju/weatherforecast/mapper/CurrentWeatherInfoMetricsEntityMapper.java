@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@Component
+@Component("CurrentWeatherInfoMetricsEntityMapper")
 public class CurrentWeatherInfoMetricsEntityMapper implements Mapper<CurrentWeatherInfoMetrics, LocationEntity> {
 
     @Autowired
@@ -25,9 +25,9 @@ public class CurrentWeatherInfoMetricsEntityMapper implements Mapper<CurrentWeat
         CurrentWeatherInfoMetrics currentWeatherInfoMetrics = new CurrentWeatherInfoMetrics();
         currentWeatherInfoMetrics.setCurrentEpochTimeStamp(data.getCurrentMain().getUnixTimeStamp());
         currentWeatherInfoMetrics.setLocationName(data.getName().toUpperCase(Locale.ROOT));
-        currentWeatherInfoMetrics.setWeatherSummary(Collections.singletonList(weatherSummaryEntityMapper.transform(data.getCurrentWeather(), currentEpochTimeStamp)));
-        currentWeatherInfoMetrics.setWind(windEntityMapper.transform(data.getCurrentWind(), currentEpochTimeStamp));
-        currentWeatherInfoMetrics.setMainIndicators(mainIndicatorsEntityMapper.transform(data.getCurrentMain(), currentEpochTimeStamp));
+        currentWeatherInfoMetrics.setWeatherSummary(Collections.singletonList(weatherSummaryEntityMapper.transform(data.getCurrentWeather(), data.getCurrentWeather().getUnixTimeStamp())));
+        currentWeatherInfoMetrics.setWind(windEntityMapper.transform(data.getCurrentWind(), data.getCurrentWind().getUnixTimeStamp()));
+        currentWeatherInfoMetrics.setMainIndicators(mainIndicatorsEntityMapper.transform(data.getCurrentMain(), data.getCurrentMain().getUnixTimeStamp()));
         return currentWeatherInfoMetrics;
     }
 }

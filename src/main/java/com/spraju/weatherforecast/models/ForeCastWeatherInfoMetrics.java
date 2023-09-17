@@ -9,13 +9,8 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ForeCastWeatherInfoMetrics {
-    @JsonProperty("name")
+    @JsonProperty("list")
+    private List<CurrentWeatherInfoMetrics> foreCastWeatherInfoMetrics;
+    @JsonIgnoreProperties
     private String locationName;
-    @JsonProperty("main")
-    private Main mainIndicators;
-    @JsonProperty("weather")
-    private List<Weather> weatherSummary;
-    private Wind wind;
-    @JsonProperty("dt")
-    private Long currentEpochTimeStamp;
 }

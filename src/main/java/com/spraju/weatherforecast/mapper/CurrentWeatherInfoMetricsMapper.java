@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
-@Component
+@Component("CurrentWeatherInfoMetricsMapper")
 public class CurrentWeatherInfoMetricsMapper implements Mapper<LocationEntity, CurrentWeatherInfoMetrics> {
 
     @Autowired
@@ -26,9 +26,9 @@ public class CurrentWeatherInfoMetricsMapper implements Mapper<LocationEntity, C
     public LocationEntity transform(CurrentWeatherInfoMetrics data, Long currentEpochTimeStamp) {
         LocationEntity locationEntity = new LocationEntity();
         locationEntity.setName(data.getLocationName().toUpperCase(Locale.ROOT));
-        locationEntity.setCurrentWeather(weatherSummaryMapper.transform(data.getWeatherSummary().get(0), currentEpochTimeStamp));
-        locationEntity.setCurrentWind(windMapper.transform(data.getWind(), currentEpochTimeStamp));
-        locationEntity.setCurrentMain(mainIndicatorsMapper.transform(data.getMainIndicators(), currentEpochTimeStamp));
+        locationEntity.setCurrentWeather(weatherSummaryMapper.transform(data.getWeatherSummary().get(0), data.getCurrentEpochTimeStamp()));
+        locationEntity.setCurrentWind(windMapper.transform(data.getWind(), data.getCurrentEpochTimeStamp()));
+        locationEntity.setCurrentMain(mainIndicatorsMapper.transform(data.getMainIndicators(), data.getCurrentEpochTimeStamp()));
         return locationEntity;
     }
 }

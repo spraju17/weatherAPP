@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,7 +92,7 @@ public class GetWeatherMetricsDBServiceImpl implements GetWeatherMetricsService 
                 return foreCastWeatherInfoMetrics;
             }
         }catch (Exception e){
-            logHandler.logEvent("Exception occured while fetching the forecast weather : "+ e.getStackTrace().toString(), logger);
+            logHandler.logEvent("Exception occured while fetching the forecast weather : "+ Arrays.toString(e.getStackTrace()), logger);
             throw  e;
         }
     }

@@ -17,6 +17,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+#  thymeleaf:
+#    prefix: classpath:/templates/
+#    suffix: .html
 #  show-sql: true
 #  properties:
 #    hibernate:
@@ -28,3 +31,4 @@ spring:
 #        SQL: DEBUG
 
 tolerence: 6000
+

@@ -3,7 +3,7 @@ package com.spraju.weatherforecast.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
+
 
 @Entity
 @Table(name = "weather")
@@ -16,4 +16,5 @@ public class WeatherEntity {
     private String description;
     private String icon;
     private Long unixTimeStamp;
+
 }

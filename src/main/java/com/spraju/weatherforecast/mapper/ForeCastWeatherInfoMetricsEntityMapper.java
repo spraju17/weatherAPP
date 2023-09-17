@@ -37,7 +37,7 @@ public class ForeCastWeatherInfoMetricsEntityMapper implements Mapper<ForeCastWe
         List<WindEntity> winds = data.getWinds();
         List<CurrentWeatherInfoMetrics> currentWeatherInfoMetrics = IntStream.range(0, weathers.size()).
                 mapToObj(i ->
-                        new CurrentWeatherInfoMetrics(data.getName(), mainIndicatorsEntityMapper.transform(mains.get(i), unixTimeStamp), Collections.singletonList(weatherSummaryEntityMapper.transform(weathers.get(i), unixTimeStamp)), windEntityMapper.transform(winds.get(i), unixTimeStamp), unixTimeStamp))
+                        new CurrentWeatherInfoMetrics(data.getName(), mainIndicatorsEntityMapper.transform(mains.get(i), data.getCurrentMain().getUnixTimeStamp()), Collections.singletonList(weatherSummaryEntityMapper.transform(weathers.get(i), data.getCurrentWeather().getUnixTimeStamp())), windEntityMapper.transform(winds.get(i), data.getCurrentWind().getUnixTimeStamp()), unixTimeStamp, convertToLocalDateTime(data.getCurrentMain().getUnixTimeStamp())))
                 .collect(Collectors.toList());
         metrics.setForeCastWeatherInfoMetrics(currentWeatherInfoMetrics);
         return metrics;

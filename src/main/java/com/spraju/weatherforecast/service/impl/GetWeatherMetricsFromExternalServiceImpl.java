@@ -1,7 +1,6 @@
 package com.spraju.weatherforecast.service.impl;
 
 import com.spraju.weatherforecast.configuration.WeatherApiClientConfig;
-import com.spraju.weatherforecast.controller.WeatherController;
 import com.spraju.weatherforecast.entity.LocationEntity;
 import com.spraju.weatherforecast.handler.LogHandler;
 import com.spraju.weatherforecast.mapper.*;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Locale;
 import java.util.Optional;
 
 @Service("WeatherMetricsFromExternalService")

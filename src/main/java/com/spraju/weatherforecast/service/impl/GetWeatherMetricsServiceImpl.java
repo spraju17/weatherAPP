@@ -10,13 +10,11 @@ import com.spraju.weatherforecast.service.GetWeatherMetricsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
 @Service
-@Primary
 public class GetWeatherMetricsServiceImpl implements GetWeatherMetricsCombinerService {
 
     @Value("${tolerence}")

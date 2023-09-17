@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Forecast</title>
+</head>
+<body>
+<form method="get" action="/">
+    <label for="locationName">Enter Location:</label>
+    <input type="text" id="locationName" name="locationName">
+    <button type="submit">Get Weather</button>
+</form>
+
+<!-- Display weather information if available -->
+<div th:if="${foreCastWeatherInfoMetrics != null && currentWeatherInfoMetrics != null}">
+    <h1>Weather Forecast for <span th:text="${foreCastWeatherInfoMetrics.locationName}"></span></h1>
+
+    <!-- Display forecast weather data -->
+    <h2>Forecast Weather</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Temperature (°C)</th>
+            <th>Humidity (%)</th>
+            <th>Weather Description</th>
+        </tr>
+        <tr th:each="forecast : ${foreCastWeatherInfoMetrics.foreCastWeatherInfoMetrics}">
+            <td th:text="${forecast.currentEpochTimeStamp}"></td>
+            <td th:text="${forecast.mainIndicators.temp}"></td>
+            <td th:text="${forecast.mainIndicators.humidity}"></td>
+            <td th:text="${forecast.weatherSummary[0].description}"></td>
+        </tr>
+    </table>
+
+    <!-- Display current weather data -->
+    <h2>Current Weather</h2>
+    <p>Temperature: <span th:text="${currentWeatherInfoMetrics.mainIndicators.temp}"></span> °C</p>
+    <p>Humidity: <span th:text="${currentWeatherInfoMetrics.mainIndicators.humidity}"></span> %</p>
+    <p>Weather Description: <span th:text="${currentWeatherInfoMetrics.weatherSummary[0].description}"></span></p>
+</div>
+</body>
+</html>

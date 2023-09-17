@@ -14,10 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import java.util.Locale;
+
+@Controller
 public class WeatherController {
 
     private static final Logger logger = LoggerFactory.getLogger(WeatherController.class);
@@ -32,33 +39,8 @@ public class WeatherController {
     @Autowired
     LogHandler logHandler;
 
-    @GetMapping("/currentWeather")
-    public CurrentWeatherInfoMetrics get() throws WeatherMetricsNotFoundDB, WeatherDBOutDatedException {
-        Long currentTime = System.currentTimeMillis();
-        try {
-            CurrentWeatherInfoMetrics currentWeatherInfoMetrics = whetherService.getCurrentWeatherInfo("delhi", 1694837180l);
-            logHandler.logPerfMetrics(new PerfMetrics(ActionType.GetCurrentWeather.toString(), true,  System.currentTimeMillis()- currentTime), logger );
-            return currentWeatherInfoMetrics;
-        } catch (Exception e) {
-            logHandler.logPerfMetrics(new PerfMetrics(ActionType.GetCurrentWeather.toString(), false,  System.currentTimeMillis()- currentTime, e), logger );
-            throw new RuntimeException(e);
-        }
-    }
-
-    @GetMapping("/foreCastWeather")
-    public ForeCastWeatherInfoMetrics getForeCastWeather() throws WeatherMetricsNotFoundDB, WeatherDBOutDatedException {
-        Long currentTime = System.currentTimeMillis();
-        try {
-            ForeCastWeatherInfoMetrics foreCastWeatherInfoMetrics = whetherService.getForeCastWeatherInfo("delhi");
-            logHandler.logPerfMetrics(new PerfMetrics(ActionType.GetForeCastWeather.toString(), true,  System.currentTimeMillis()- currentTime), logger );
-            return foreCastWeatherInfoMetrics;
-        } catch (Exception e) {
-            logHandler.logPerfMetrics(new PerfMetrics(ActionType.GetCurrentWeather.toString(), false,  System.currentTimeMillis()- currentTime, e), logger );
-            throw new RuntimeException(e);
-        }
-    }
-
     @GetMapping("/wethear")
+    @ResponseBody
     public WeatherInfoMetrics getWeather() throws WeatherMetricsNotFoundDB, WeatherDBOutDatedException {
         WeatherInfoMetrics weatherInfoMetrics = null;
         Long currentTime = System.currentTimeMillis();
@@ -70,4 +52,14 @@ public class WeatherController {
         }
         return  weatherInfoMetrics;
     }
+    @GetMapping("/")
+    public String weather(Model model , @RequestParam(name = "locationName", required = false) String locationName) throws WeatherMetricsNotFoundDB, WeatherDBOutDatedException {
+        if (locationName != null) {
+            model.addAttribute("foreCastWeatherInfoMetrics", whetherService.getWeatherInfoMetrics(locationName.toUpperCase(Locale.ROOT)).getForeCastWeatherInfoMetrics());
+            model.addAttribute("currentWeatherInfoMetrics", whetherService.getWeatherInfoMetrics(locationName.toUpperCase(Locale.ROOT)).getCurrentWeatherInfoMetrics());
+            return "weather";
+        }
+        return "weather";
+    }
+
 }
